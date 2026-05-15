@@ -7,3 +7,5 @@ pydantic
 aiofiles
 python-dotenv
 pytest
+wheel>=0.46.2
+jaraco.context>=6.1.0
