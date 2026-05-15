@@ -1,5 +1,6 @@
-![CI](https://github.com/<user>/<repo>/actions/workflows/devsecops-pipeline.yml/badge.svg)
+
 # Cloud-Native DLP & DevSecOps Platform
+![CI](https://github.com/tapanhegde26/DLP-DevSecOps-Platform/actions/workflows/devsecops-pipeline.yml/badge.svg)
 
 A production-grade cloud-native Data Loss Prevention (DLP) and DevSecOps platform built using Kubernetes, FastAPI, Terraform, OpenSearch, and AWS event-driven architecture.
 
