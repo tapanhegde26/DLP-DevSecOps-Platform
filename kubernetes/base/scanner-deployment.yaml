@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: scanner-service
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: scanner-service
+
+  template:
+    metadata:
+      labels:
+        app: scanner-service
+
+    spec:
+      containers:
+        - name: scanner-service
+          image: scanner-service:5.0
+          imagePullPolicy: Never
+
+          env:
+            - name: OPENSEARCH_HOST
+              value: "host.docker.internal"
+
+          ports:
+            - containerPort: 8080

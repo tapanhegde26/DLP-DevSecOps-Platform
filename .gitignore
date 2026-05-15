@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Kubernetes
+kubeconfig
+
+# Mac
+.DS_Store
+
+# IDE
+.vscode/
+
+# Logs
+*.log

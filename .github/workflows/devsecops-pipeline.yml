@@ -1,0 +1,84 @@
+name: DevSecOps Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+  pull_request:
+
+jobs:
+
+  security-scan:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+
+      - name: Run Trivy Filesystem Scan
+        uses: aquasecurity/trivy-action@master
+
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: table
+
+      - name: Build Scanner Image
+        run: |
+          docker build \
+          -t scanner-service:${{ github.sha }} \
+          services/scanner-service
+      
+      - name: Scan Docker Image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: scanner-service:${{ github.sha }}
+          format: table
+          exit-code: 1
+          severity: CRITICAL,HIGH
+
+      - name: Generate SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          image: scanner-service:${{ github.sha }}
+          format: spdx-json
+          output-file: sbom.spdx.json
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.spdx.json
+
+      - name: Validate Kubernetes Manifests
+        uses: docker://ghcr.io/yannh/kubeconform:latest
+        with:
+          args: >
+            -strict
+            -summary
+            kubernetes/base
+
+      - name: Install Ruff
+        run: pip install ruff
+
+      - name: Run Ruff Linter
+        run: |
+          ruff check services/
+
+      - name: Run Unit Tests
+        run: |
+          cd services/scanner-service
+          pytest
+
+      - name: Security Pipeline Complete
+        run: |
+          echo "All security checks passed"
+
+      

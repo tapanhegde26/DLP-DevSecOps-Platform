@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+python-multipart
+opensearch-py
+prometheus-fastapi-instrumentator
+pydantic
+aiofiles
+python-dotenv
+pytest
